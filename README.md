@@ -1,3 +1,9 @@
+# Netflix-Gpt
+  - Create react App 
+  - Config Tailwind 
+  - Header
+  - Login Form
+
 # Features 
  - Login/Sign Up Form
    - Sign In / Sign up Form
