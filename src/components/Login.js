@@ -1,10 +1,13 @@
 import Header from "./Header"
 import { useRef, useState } from "react";
 import CheckValidData from "../utils/CheckValidData"
-
+import { auth } from "../utils/firebase";
+import { createUserWithEmailAndPassword ,signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 function Login() {
     const [isSignInform, setisSignInform] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
+    const navigate = useNavigate();
     const email = useRef();
     const password = useRef();
     const name = useRef();
@@ -19,9 +22,43 @@ function Login() {
         const passwordValue = password.current.value;
         const nameValue = isSignInform ? "" : name.current.value; // Only validate name for signup
 
-        const validationMessage = CheckValidData(emailValue, passwordValue, nameValue , !isSignInform);
+        const validationMessage = CheckValidData(emailValue, passwordValue, nameValue, !isSignInform);
         setErrorMessage(validationMessage);
         // Proceed with login or signup logic here
+
+        if (validationMessage) return;
+
+        if (!isSignInform) {
+            createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log (user)
+                    navigate("/Browse")
+                })
+                .catch((error) => {
+                    let errorCode = error.code;
+                    let errorMessage = error.message;
+                    errorCode = "404"
+                    errorMessage = "user not found"
+                    setErrorMessage(errorCode + " " + errorMessage)
+                });
+        }
+
+        else {
+            signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log (user)
+                    navigate("/Browse")
+                })
+                .catch((error) => {
+                    let errorCode = error.code;
+                    let errorMessage = error.message;
+                    errorCode = "404"
+                    errorMessage = "user not found"
+                    setErrorMessage (errorCode + " " + errorMessage)
+                });
+        }
     }
 
     return (
@@ -36,11 +73,11 @@ function Login() {
                 <h2 className="font-bold text-3xl py-4 text-white">{!isSignInform ? "Sign Up" : "Sign In"}</h2>
                 {!isSignInform && (
                     <>
-                    <input ref={name}
-                        className="bg-gray-700 py-3 px-4 w-full my-4 rounded-sm"
-                        type="text"
-                        placeholder="Full Name"
-                    />
+                        <input ref={name}
+                            className="bg-gray-700 py-3 px-4 w-full my-4 rounded-sm"
+                            type="text"
+                            placeholder="Full Name"
+                        />
                     </>
                 )}
                 <input ref={email}
@@ -52,7 +89,7 @@ function Login() {
                     className="bg-gray-700 py-3 px-4 w-full my-4 rounded-sm"
                     type="password"
                     placeholder="Password" />
-                {errorMessage && <p className="text-red-600 font-bold">{errorMessage}</p>} 
+                {errorMessage && <p className="text-red-600 font-bold">{errorMessage}</p>}
                 <button type="submit" className="py-3 bg-red-700 text-white w-full my-6 rounded-md">
                     {!isSignInform ? "Sign Up" : "Sign In"}
                 </button>
