@@ -2,20 +2,37 @@ import React from 'react'
 import { signOut } from "firebase/auth";
 import { auth } from '../utils/firebase';
 import { useNavigate, useLocation } from 'react-router-dom';
-
+import { useDispatch } from 'react-redux';
+import { onAuthStateChanged } from 'firebase/auth';
+import { addUser , removeUser } from '../utils/userSlice';
+import { useEffect } from 'react';
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth);
-      navigate("/"); // Redirect to login page after sign out
+      await signOut(auth); // Redirect to login page after sign out
     } catch (error) {
       // Optionally handle error
       alert("Sign out failed");
     }
   };
+
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, password, displayName } = user;
+        dispatch(addUser({ uid, email, password, displayName }));
+        navigate("/Browse")
+      } else {
+        dispatch(removeUser());
+        navigate("/")
+      }
+    });
+  }, [])
 
   return (
     <div className="w-full flex justify-between items-center">

@@ -2,8 +2,11 @@ import Header from "./Header"
 import { useRef, useState } from "react";
 import CheckValidData from "../utils/CheckValidData"
 import { auth } from "../utils/firebase";
-import { createUserWithEmailAndPassword ,signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword ,signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
+
 function Login() {
     const [isSignInform, setisSignInform] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
@@ -11,7 +14,7 @@ function Login() {
     const email = useRef();
     const password = useRef();
     const name = useRef();
-
+    const dispatch = useDispatch();                 // for adding user to the store                         
     const toggletoSignup = () => {
         setisSignInform(!isSignInform);
     }
@@ -33,13 +36,14 @@ function Login() {
                 .then((userCredential) => {
                     const user = userCredential.user;
                     console.log (user)
-                    navigate("/Browse")
+                    dispatch(addUser(user));
+                    updateProfile(user, {
+                        displayName: name.current.value
+                    })
                 })
                 .catch((error) => {
                     let errorCode = error.code;
                     let errorMessage = error.message;
-                    errorCode = "404"
-                    errorMessage = "user not found"
                     setErrorMessage(errorCode + " " + errorMessage)
                 });
         }
@@ -48,8 +52,6 @@ function Login() {
             signInWithEmailAndPassword(auth, email.current.value, password.current.value)
                 .then((userCredential) => {
                     const user = userCredential.user;
-                    console.log (user)
-                    navigate("/Browse")
                 })
                 .catch((error) => {
                     let errorCode = error.code;
@@ -96,7 +98,6 @@ function Login() {
                 <p className="text-white py-4 cursor-pointer" onClick={toggletoSignup}>
                     {!isSignInform ? "Already Registered? Sign In" : "New to Netflix? Sign up now"}
                 </p>
-
             </form>
         </div>
     )
