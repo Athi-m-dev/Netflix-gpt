@@ -11,7 +11,10 @@
   - pending (study redux and add the credintials into store and if signout remove into the store) [instead use the useLocation hook]
   - Fetch movies from tmdb
   - bug fix - if the user login only redirect to the browse page if user logout dont redirect to the browse show the login page
-  -
+  - unsubscribe the user from the store if the user logout
+  - add  hardcoded list to constants.js file
+  - fetch movies from tmdb api
+  
 
 # Features 
  - Login/Sign Up Form
