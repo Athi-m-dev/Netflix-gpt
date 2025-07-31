@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { addTailer } from '../utils/MovieSlice';
 import { useEffect } from 'react';
 const useTailer = (props) => {
-    console.log (props);
     const  Tailerid  = props;
     const dispatch = useDispatch();
     useEffect(() => {
@@ -16,7 +15,6 @@ const useTailer = (props) => {
         const json = await response.json();
         const filteredVideos = json.results.filter(video => video.type === 'Trailer' && video.site === 'YouTube');
         const trailer = filteredVideos.length ? filteredVideos[0] : json.results[0];
-        console.log(trailer);
         dispatch(addTailer(trailer));
     }
 }

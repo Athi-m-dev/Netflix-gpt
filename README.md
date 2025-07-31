@@ -14,9 +14,18 @@
   - unsubscribe the user from the store if the user logout
   - add  hardcoded list to constants.js file
   - fetch movies from tmdb api
-  
+  - Custom hook to fetch the movie details 
+  - Create Movie Slice 
+  - Update Store with movie details
+  - Upadate the Tailer in the store
+  - Create VideoBackground component
+  - Planning for Maincontainer & Secondary container
+  - Separate the components for Video and Title
+  - Embed youtube video as 
+  - Add the Tailwind classes to the Browse page
 
-# Features 
+
+# Features
  - Login/Sign Up Form
    - Sign In / Sign up Form
    - redirect to Browse Page

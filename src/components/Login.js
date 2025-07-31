@@ -5,7 +5,6 @@ import { auth } from "../utils/firebase";
 import { createUserWithEmailAndPassword ,signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 import { useDispatch } from "react-redux";
-import { addUser } from "../utils/userSlice";
 import { BACKGROUND_JPG } from "../utils/constants";
 
 function Login() {
@@ -33,18 +32,13 @@ function Login() {
 
         if (!isSignInform) {
             createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
-                .then((userCredential) => {
+                .then(async (userCredential) => {
                     const user = userCredential.user;
-                    dispatch(addUser(user));
-                    return updateProfile(user, {
+                    await updateProfile(user, {
                         displayName: name.current.value
-                    }).then(() => {
-                        // Step 2: Reload user to get updated info
-                        return auth.currentUser.reload().then(() => {
-                            const updatedUser = auth.currentUser;
-                            dispatch(addUser(updatedUser)); // Now includes displayName
-                        });
                     });
+                    await auth.currentUser.reload();
+
                 })
                 .catch((error) => {
                     let errorCode = error.code;
@@ -55,15 +49,9 @@ function Login() {
 
         else {
             signInWithEmailAndPassword(auth, email.current.value, password.current.value)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    dispatch(addUser(user));
-                })
                 .catch((error) => {
                     let errorCode = error.code;
                     let errorMessage = error.message;
-                    errorCode = "404"
-                    errorMessage = "user not found"
                     setErrorMessage (errorCode + " " + errorMessage)
                 });
         }
