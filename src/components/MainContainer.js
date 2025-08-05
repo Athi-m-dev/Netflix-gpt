@@ -8,7 +8,7 @@ const MainContainer = () => {
     return <div>Loading...</div>;
   }
   console.log(Movies);
-  const mainMovie = Movies?.[9];
+  const mainMovie = Movies?.[10];
   return (
     <div>
       <VideoTitle movieTitle={mainMovie} />
